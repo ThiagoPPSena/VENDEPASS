@@ -6,19 +6,24 @@ import (
 
 func main() {
 	// Configurando o endereço e a porta do servidor
-	requests.ServerAddress = "172.16.103.223"
-	requests.ServerPort = "1010"
+	//Passar ip local
+	requests.ServerAddress = "127.0.0.1"
+	requests.ServerPort = "8080"
 
 	// Criar uma requisição de disponibilidade de rotas
 	origin := "Feira de Santana"
 	destination := "São Paulo"
 	request := requests.StringGet(origin, destination)
-	response := requests.RequestServer(request)
+	response, err := requests.RequestServer(request)
+	if err != nil {
+		println("Erro ao fazer a requisição: ", err.Error())
+		return
+	}
 	println(response)
 
 	// Criar uma requisição de compra de rotas
-	routes := []string{"Feira de Santana/Salvador", "Salvador/São Paulo"}
-	request = requests.StringBuy(routes)
-	response = requests.RequestServer(request)
-	println(response)
+	// routes := []string{"Feira de Santana/Salvador", "Salvador/São Paulo"}
+	// request = requests.StringBuy(routes)
+	// response = requests.RequestServer(request)
+	// println(response)
 }

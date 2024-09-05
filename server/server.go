@@ -32,20 +32,25 @@ func main() {
 }
 
 func handleConnection(connect net.Conn) {
-	defer connect.Close()
-	fmt.Println("Nova conexão estabelecida: ", connect.RemoteAddr())
-	_, err := connect.Write([]byte("Olá, cliente!"))
-	if err != nil {
-		fmt.Println("Erro ao enviar mensagem: ", err)
-		return
-	}
+	defer func() {
+		connect.Close()
+		fmt.Println("Conexão fechada: ", connect.RemoteAddr())
+	}()
 
-	// Buffer para receber a mensagem do cliente
+	fmt.Println("Nova conexão estabelecida: ", connect.RemoteAddr())
 	buffer := make([]byte, 1024)
 	n, err := connect.Read(buffer)
 	if err != nil {
 		fmt.Println("Erro ao receber mensagem: ", err)
 		return
 	}
+	// Buffer para receber a mensagem do cliente
 	fmt.Println("Mensagem recebida pelo cliente: ", string(buffer[:n]))
+
+	_, err = connect.Write([]byte("Olá, cliente!"))
+	if err != nil {
+		fmt.Println("Erro ao enviar mensagem: ", err)
+		return
+	}
+
 }

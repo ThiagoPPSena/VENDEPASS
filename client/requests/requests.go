@@ -1,19 +1,24 @@
 package requests
 
 import (
+	"fmt"
 	"net"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var ServerAddress = "172.16.103.223"
 var ServerPort = "1010"
 
-func RequestServer(request string) string {
+// Coloca um timeout de 2 segundos para a conexão
+var ConnectionTimeout = 2 * time.Second
+
+func RequestServer(request string) (string, error) {
 	//Conectar ao servidor tcp porta 8080
-	connect, err := net.Dial("tcp", ServerAddress+":"+ServerPort)
+	connect, err := net.DialTimeout("tcp", ServerAddress+":"+ServerPort, ConnectionTimeout)
 	if err != nil {
-		panic("Erro ao conectar ao servidor: " + err.Error())
+		return "", fmt.Errorf("erro ao conectar ao servidor")
 	}
 	//Garantir que a conexão será fechada
 	defer connect.Close()
@@ -22,15 +27,16 @@ func RequestServer(request string) string {
 	_, err = connect.Write([]byte(request))
 
 	if err != nil {
-		panic("Erro ao enviar mensagem: " + err.Error())
+		return "", fmt.Errorf("erro ao enviar a requisição")
 	}
+
 	//Le a resposta da requisição do servidor
 	buffer := make([]byte, 1024)
 	size, err := connect.Read(buffer)
 	if err != nil {
-		panic("Erro ao ler mensagem: " + err.Error())
+		return "", fmt.Errorf("erro ao receber a resposta")
 	}
-	return string(buffer[:size])
+	return string(buffer[:size]), nil
 }
 
 // GET
