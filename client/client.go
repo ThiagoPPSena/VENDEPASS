@@ -120,15 +120,15 @@ func defaultMenu() {
 		fmt.Scan(&option)
 		switch option {
 		case 1:
-			// Primeiro faz o usuario escolher a rota desejada
+			//Primeiro faz o usuario escolher a rota desejada
 			// var origin, destination string
 			// origin, destination = chooseRoute()
-			// Busca no servidor os trechos disponíveis entre a origem e o destino
-			// Precisa fazer a função que retorna as rotas disponíveis, transforma a resposta mais amigavel
+			//Busca no servidor os trechos disponíveis entre a origem e o destino
+			//Precisa fazer a função que retorna as rotas disponíveis, transforma a resposta mais amigavel
 			// response := availableTickets(origin, destination)
-			// Mostra ao usuário as rotas disponíveis e deixa ele escolher
+			//Mostra ao usuário as rotas disponíveis e deixa ele escolher
 			// buyTicketMenu(response)
-			// Quando tiver as rotas escolhidas, chama a função de compra de passagem
+			//Quando tiver as rotas escolhidas, chama a função de compra de passagem
 			// buyTicket(routes)
 		case 2:
 			clearConsole()
