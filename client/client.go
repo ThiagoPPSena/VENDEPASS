@@ -141,6 +141,10 @@ func defaultMenu() {
 	}
 }
 
+// Coisa para adcionar:
+// Tentar fazer uma associação das respostas com id de cada trecho
+// Converter a string que tá vindo do servidor em um objeto
+
 func main() {
 	requests.ServerAddress = "127.0.0.1"
 	requests.ServerPort = "8080"
