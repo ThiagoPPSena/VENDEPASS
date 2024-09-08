@@ -10,6 +10,7 @@ import (
 
 var ServerAddress = "172.16.103.223"
 var ServerPort = "1010"
+var HeaderCpf string
 
 // Coloca um timeout de 2 segundos para a conexão
 var ConnectionTimeout = 2 * time.Second
