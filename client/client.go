@@ -24,7 +24,6 @@ func clearConsole() {
 }
 
 func buyTicket(routes []string) string {
-
 	//Cria uma requisição de compra de rotas
 	request := requests.StringBuy(routes)
 	//Envia a requisição para o servidor
@@ -72,7 +71,6 @@ func chooseRoute() (string, string) {
 		fmt.Println("Essa rota está correta? (s/n)")
 		fmt.Scan(&response)
 	}
-
 	return origin, destination
 }
 
