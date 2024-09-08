@@ -49,13 +49,24 @@ func availableTickets(origin string, destination string) {
 	println(response)
 }
 
+func ternaryString(condition bool, trueValue string, falseValue string) string {
+	if condition {
+		return trueValue
+	}
+	return falseValue
+}
 
+// Roda o menu padrão da interface do cliente
 func defaultMenu() {
 	var option int
+	var invalidOption bool
+	for {
+		clearConsole()
 		fmt.Println("1 - Comprar passagem")
 		fmt.Println("2 - Minhas passagens")
 		fmt.Println("3 - Sair")
-		fmt.Print("Escolha uma opção: ")
+		fmt.Print(ternaryString(invalidOption, "Opção inválida, Escolha uma opção válida", "Escollha uma opção: "))
+		invalidOption = false
 		fmt.Scan(&option)
 		switch option {
 		case 1:
@@ -69,17 +80,14 @@ func defaultMenu() {
 			fmt.Println("Saindo...")
 			os.Exit(0)
 		default:
-			clearConsole()
-			fmt.Println("Opção inválida")
+			invalidOption = true
 		}
+	}
 }
 
 func main() {
 	requests.ServerAddress = "127.0.0.1"
 	requests.ServerPort = "8080"
 
-	for { 
-		defaultMenu()
-	}
-
+	defaultMenu()
 }
