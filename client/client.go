@@ -14,12 +14,18 @@ func main() {
 	origin := "Feira de Santana"
 	destination := "São Paulo"
 	request := requests.StringGet(origin, destination)
-	response, err := requests.RequestServer(request)
-	if err != nil {
-		println("Erro ao fazer a requisição: ", err.Error())
-		return
+
+	for i := 0; i < 200; i++ {
+		_, err := requests.RequestServer(request)
+		if err != nil {
+			println("Erro ao fazer a requisição: ", err.Error())
+			return
+		}
 	}
-	println(response)
+
+
+
+	// println(response)
 
 	// Criar uma requisição de compra de rotas
 	// routes := []string{"Feira de Santana/Salvador", "Salvador/São Paulo"}

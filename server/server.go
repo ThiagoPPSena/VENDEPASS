@@ -6,6 +6,8 @@ import (
 	"net"
 )
 
+var values = 1000
+
 func main() {
 	ln, err := net.Listen("tcp", ":8080")
 	if err != nil {
@@ -44,6 +46,7 @@ func handleConnection(connect net.Conn) {
 		fmt.Println("Erro ao receber mensagem: ", err)
 		return
 	}
+	values -= 1
 	// Buffer para receber a mensagem do cliente
 	fmt.Println("Mensagem recebida pelo cliente: ", string(buffer[:n]))
 
@@ -52,5 +55,7 @@ func handleConnection(connect net.Conn) {
 		fmt.Println("Erro ao enviar mensagem: ", err)
 		return
 	}
+
+	print(values)
 
 }
