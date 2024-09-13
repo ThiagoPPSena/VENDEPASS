@@ -8,18 +8,19 @@ import (
 	"time"
 )
 
-var ServerAddress = "172.16.103.223"
-var ServerPort = "1010"
+var ServerAddress = "localhost"
+var ServerPort = "8080"
 var HeaderCpf string
 
 // Coloca um timeout de 2 segundos para a conexão
-var ConnectionTimeout = 2 * time.Second
+var ConnectionTimeout = 10 * time.Second
 
-func RequestServer(request string) (string, error) {
+func RequestServer(request string) ([]byte, error) {
 	//Conectar ao servidor tcp porta 8080
+	print("Conectando ao servidor...", ServerAddress+":"+ServerPort)
 	connect, err := net.DialTimeout("tcp", ServerAddress+":"+ServerPort, ConnectionTimeout)
 	if err != nil {
-		return "", fmt.Errorf("erro ao conectar ao servidor")
+		return nil, fmt.Errorf("erro ao conectar ao servidor")
 	}
 	//Garantir que a conexão será fechada
 	defer connect.Close()
@@ -28,16 +29,16 @@ func RequestServer(request string) (string, error) {
 	_, err = connect.Write([]byte(request))
 
 	if err != nil {
-		return "", fmt.Errorf("erro ao enviar a requisição")
+		return nil, fmt.Errorf("erro ao enviar a requisição")
 	}
 
 	//Le a resposta da requisição do servidor
 	buffer := make([]byte, 1024)
 	size, err := connect.Read(buffer)
 	if err != nil {
-		return "", fmt.Errorf("erro ao receber a resposta")
+		return nil, fmt.Errorf("erro ao receber a resposta")
 	}
-	return string(buffer[:size]), nil
+	return buffer[:size], nil
 }
 
 // GET

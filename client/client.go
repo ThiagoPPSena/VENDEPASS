@@ -2,11 +2,23 @@ package main
 
 import (
 	"VENDEPASS/client/requests"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 )
+
+type Route struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
+type Response struct {
+	Status int       `json:"status"`
+	Routes [][]Route `json:"routes"`
+}
 
 func clearConsole() {
 	var cmd *exec.Cmd
@@ -23,29 +35,45 @@ func clearConsole() {
 	cmd.Run()
 }
 
-func buyTicket(routes []string) string {
+func decodeResponse(response []byte) (Response, error) {
+	var decodedRoute Response
+
+	err := json.Unmarshal(response, &decodedRoute)
+	if err != nil {
+		return Response{}, err
+	}
+	return decodedRoute, nil
+}
+
+func buyTicket(routes []string) (Response, error) {
 	//Cria uma requisição de compra de rotas
 	request := requests.StringBuy(routes)
 	//Envia a requisição para o servidor
 	response, err := requests.RequestServer(request)
 	if err != nil {
-		println("Erro ao fazer a requisição: ", err.Error())
-		return ""
+		return Response{}, err
 	}
-	return response
-	
+	data, err := decodeResponse(response)
+	if err != nil {
+		return Response{}, err
+	}
+	return data, nil
+
 }
 
-func availableTickets(origin string, destination string) string {
+func availableTickets(origin string, destination string) (Response, error) {
 	// Cria a requisição de compra de passagem
 	request := requests.StringGet(origin, destination)
 	// Envia a requisição para o servidor
 	response, err := requests.RequestServer(request)
 	if err != nil {
-		println("Erro ao fazer a requisição: ", err.Error())
-		return ""
+		return Response{}, err
 	}
-	return response
+	data, err := decodeResponse(response)
+	if err != nil {
+		return Response{}, err
+	}
+	return data, nil
 }
 
 func ternaryString(condition bool, trueValue string, falseValue string) string {
@@ -66,7 +94,7 @@ func chooseRoute() (string, string) {
 		//Precisamos de alguma forma listar todos os destinos
 		fmt.Println("Escolha o destino: ")
 		fmt.Scan(&destination)
-	
+
 		fmt.Printf("Origem: %s\nDestino: %s", origin, destination)
 		fmt.Println("Essa rota está correta? (s/n)")
 		fmt.Scan(&response)
@@ -119,13 +147,19 @@ func defaultMenu() {
 		switch option {
 		case 1:
 			//Primeiro faz o usuario escolher a rota desejada
-			// var origin, destination string
-			// origin, destination = chooseRoute()
+			var origin, destination string
+			origin, destination = chooseRoute()
 			//Busca no servidor os trechos disponíveis entre a origem e o destino
 			//Precisa fazer a função que retorna as rotas disponíveis, transforma a resposta mais amigavel
-			// response := availableTickets(origin, destination)
+			response, err := availableTickets(origin, destination)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(response)
+			time.Sleep(10 * time.Second)
 			//Mostra ao usuário as rotas disponíveis e deixa ele escolher
-			// buyTicketMenu(response)
+			// router := buyTicketMenu(response)
 			//Quando tiver as rotas escolhidas, chama a função de compra de passagem
 			// buyTicket(routes)
 		case 2:
@@ -146,11 +180,22 @@ func defaultMenu() {
 // Converter a string que tá vindo do servidor em um objeto
 
 func main() {
-	requests.ServerAddress = "127.0.0.1"
+	requests.ServerAddress = "172.16.103.223"
 	requests.ServerPort = "8080"
 	// Pede para o usuário digitar o cpf
-	cpf := identificationMenu()
-	requests.HeaderCpf = cpf
+	origin, destination := chooseRoute()
+	//Busca no servidor os trechos disponíveis entre a origem e o destino
+	//Precisa fazer a função que retorna as rotas disponíveis, transforma a resposta mais amigavel
+	response, err := availableTickets(origin, destination)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(response)
+	time.Sleep(10 * time.Second)
+
+	// cpf := identificationMenu()
+	// requests.HeaderCpf = cpf
 
 	defaultMenu()
 }
