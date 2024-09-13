@@ -1,0 +1,10 @@
+{
+    "Salvador": [{
+        "from": "Salvador",
+        "to": "Feira",
+        "seats": 0
+    }, "Cachoeira"],
+    "Feira": ["Ilheus"],
+    "Cachoeira": ["Salvador"]
+
+}

@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-var ServerAddress = "172.16.103.223"
-var ServerPort = "1010"
+var ServerAddress = ""
+var ServerPort = ""
 
 func RequestServer(request string) string {
 	//Conectar ao servidor tcp porta 8080
-	connect, err := net.Dial("tcp", ServerAddress+":"+ServerPort)
+	connect, err := net.Dial("tcp", ServerAddress+":8080")
 	if err != nil {
 		panic("Erro ao conectar ao servidor: " + err.Error())
 	}
