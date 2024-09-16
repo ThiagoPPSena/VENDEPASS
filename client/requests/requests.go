@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+type Route struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
 var ServerAddress = "localhost"
 var ServerPort = "8080"
 var HeaderCpf string
@@ -55,7 +60,18 @@ func StringGet(origin string, destination string) string {
 // FEIRA DE SANTANA/SALVADOR
 // SALVADOR/SAO PAULO
 // Função para gerar a srting de requisição de compra
-func StringBuy(routes []string) string {
-	request := "BUY\n" + "COUNT=" + strconv.Itoa(len(routes)) + "\n" + strings.Join(routes, "\n")
+func StringBuy(routes []Route) string {
+	// Cria um slice para armazenar as strings formatadas das rotas
+	var routeStrings []string
+	for _, route := range routes {
+		// Formata cada rota como "origem-destino"
+		routeStrings = append(routeStrings, route.From+"/"+route.To)
+	}
+
+	// Junta todas as rotas com quebra de linha
+	routesJoined := strings.Join(routeStrings, "\n")
+
+	// Cria a string da requisição
+	request := "BUY\n" + "COUNT=" + strconv.Itoa(len(routes)) + "\n" + routesJoined
 	return request
 }

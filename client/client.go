@@ -7,17 +7,11 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"time"
 )
 
-type Route struct {
-	From string `json:"from"`
-	To   string `json:"to"`
-}
-
 type Response struct {
-	Status int       `json:"status"`
-	Routes [][]Route `json:"routes"`
+	Status int                `json:"status"`
+	Routes [][]requests.Route `json:"routes"`
 }
 
 func clearConsole() {
@@ -45,7 +39,7 @@ func decodeResponse(response []byte) (Response, error) {
 	return decodedRoute, nil
 }
 
-func buyTicket(routes []string) (Response, error) {
+func buyTicket(routes []requests.Route) (Response, error) {
 	//Cria uma requisição de compra de rotas
 	request := requests.StringBuy(routes)
 	//Envia a requisição para o servidor
@@ -102,20 +96,6 @@ func chooseRoute() (string, string) {
 	return origin, destination
 }
 
-func buyTicketMenu(routes []string) {
-	var option int
-	for {
-		clearConsole()
-		fmt.Println("Escolha uma rota: ")
-		fmt.Println(routes)
-		fmt.Println("0 - Voltar")
-		fmt.Scan(&option)
-		if option == 0 {
-			return
-		}
-	}
-}
-
 func identificationMenu() string {
 	var cpf string
 	var invalidCpf bool
@@ -130,6 +110,55 @@ func identificationMenu() string {
 		}
 	}
 	return cpf
+}
+
+func showTicket(response Response) {
+	for i, routeSet := range response.Routes {
+		fmt.Println("")
+		fmt.Printf("Passagem %d: ", i+1)
+		for j, route := range routeSet {
+			if len(routeSet)-1 == j {
+				fmt.Printf(" Trecho %d: %s -> %s\n", j+1, route.From, route.To)
+			} else {
+				fmt.Printf("  Trecho %d: %s -> %s", j+1, route.From, route.To)
+			}
+		}
+	}
+}
+
+func mockResponse() Response {
+	return Response{
+		Status: 200,
+		Routes: [][]requests.Route{
+			{
+				{From: "São Paulo", To: "Campinas"},
+				{From: "Campinas", To: "Sorocaba"},
+			},
+			{
+				{From: "São Paulo", To: "Rio de Janeiro"},
+				{From: "Rio de Janeiro", To: "Vitória"},
+			},
+			{
+				{From: "São Paulo", To: "Belo Horizonte"},
+				{From: "Belo Horizonte", To: "Brasília"},
+			},
+		},
+	}
+}
+
+func chooseTicket(response Response) []requests.Route {
+	var option int
+
+	fmt.Println("Escolha qual passagem deseja comprar")
+	fmt.Scanln(&option)
+	selectedTicket := response.Routes[option-1]
+	clearConsole()
+	for i, route := range selectedTicket {
+		fmt.Printf("Trecho %d: %s -> %s ", i+1, route.From, route.To)
+	}
+	fmt.Printf("\nVocê escolheu a passagem %d, com os trechos acima!", option)
+	return selectedTicket
+
 }
 
 // Roda o menu padrão da interface do cliente
@@ -149,19 +178,17 @@ func defaultMenu() {
 			//Primeiro faz o usuario escolher a rota desejada
 			var origin, destination string
 			origin, destination = chooseRoute()
-			//Busca no servidor os trechos disponíveis entre a origem e o destino
-			//Precisa fazer a função que retorna as rotas disponíveis, transforma a resposta mais amigavel
+			// //Busca no servidor os trechos disponíveis entre a origem e o destino
 			response, err := availableTickets(origin, destination)
 			if err != nil {
 				fmt.Println(err)
 				return
 			}
-			fmt.Println(response)
-			time.Sleep(10 * time.Second)
 			//Mostra ao usuário as rotas disponíveis e deixa ele escolher
-			// router := buyTicketMenu(response)
+			showTicket(response)
+			selectedTicket := chooseTicket(response)
 			//Quando tiver as rotas escolhidas, chama a função de compra de passagem
-			// buyTicket(routes)
+			buyTicket(selectedTicket)
 		case 2:
 			clearConsole()
 			availableTickets("Feira de Santana", "São Paulo")
@@ -180,8 +207,9 @@ func defaultMenu() {
 // Converter a string que tá vindo do servidor em um objeto
 
 func main() {
-	requests.ServerAddress = "172.16.103.223"
+	requests.ServerAddress = "172.16.103.11"
 	requests.ServerPort = "8080"
+
 	// Pede para o usuário digitar o cpf
 	origin, destination := chooseRoute()
 	//Busca no servidor os trechos disponíveis entre a origem e o destino
@@ -191,9 +219,11 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(response)
-	time.Sleep(10 * time.Second)
-
+	//Mostra ao usuário as rotas disponíveis e deixa ele escolher
+	showTicket(response)
+	selectedTicket := chooseTicket(response)
+	//Quando tiver as rotas escolhidas, chama a função de compra de passagem
+	buyTicket(selectedTicket)
 	// cpf := identificationMenu()
 	// requests.HeaderCpf = cpf
 
