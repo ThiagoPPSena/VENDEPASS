@@ -208,7 +208,6 @@ func defaultMenu() {
 				fmt.Println("Ocorreu um erro inesperado ao efetuar a comprar, cheque suas passagens")
 			}
 			waitForEnter()
-
 		case 2:
 			clearConsole()
 			availableTickets("Feira de Santana", "São Paulo")
