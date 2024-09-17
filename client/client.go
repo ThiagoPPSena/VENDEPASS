@@ -192,7 +192,9 @@ func defaultMenu() {
 			showTicket(response)
 			selectedTicket := chooseTicket(response)
 			//Quando tiver as rotas escolhidas, chama a função de compra de passagem
+			fmt.Println("Comprando passagem...")
 			responseBuy, errBuy := buyTicket(selectedTicket)
+			clearConsole()
 			if errBuy != nil {
 				fmt.Println(errBuy)
 				waitForEnter()
