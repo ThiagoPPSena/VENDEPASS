@@ -18,7 +18,7 @@ var ServerPort = "8080"
 var HeaderCpf string
 
 // Coloca um timeout de 2 segundos para a conexão
-var ConnectionTimeout = 10 * time.Second
+var ConnectionTimeout = 2 * time.Second
 
 func RequestServer(request string) ([]byte, error) {
 	//Conectar ao servidor tcp porta 8080
