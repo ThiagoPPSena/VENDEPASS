@@ -22,10 +22,9 @@ var ConnectionTimeout = 2 * time.Second
 
 func RequestServer(request string) ([]byte, error) {
 	//Conectar ao servidor tcp porta 8080
-	print("Conectando ao servidor...", ServerAddress+":"+ServerPort)
 	connect, err := net.DialTimeout("tcp", ServerAddress+":"+ServerPort, ConnectionTimeout)
 	if err != nil {
-		return nil, fmt.Errorf("erro ao conectar ao servidor")
+		return nil, fmt.Errorf("falha na conexão com o servidor")
 	}
 	//Garantir que a conexão será fechada
 	defer connect.Close()
@@ -34,14 +33,14 @@ func RequestServer(request string) ([]byte, error) {
 	_, err = connect.Write([]byte(request))
 
 	if err != nil {
-		return nil, fmt.Errorf("erro ao enviar a requisição")
+		return nil, fmt.Errorf("falha ao enviar a requisição")
 	}
 
 	//Le a resposta da requisição do servidor
 	buffer := make([]byte, 1024)
 	size, err := connect.Read(buffer)
 	if err != nil {
-		return nil, fmt.Errorf("erro ao receber a resposta")
+		return nil, fmt.Errorf("falha ao ler a resposta do servidor")
 	}
 	return buffer[:size], nil
 }

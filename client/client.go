@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
-	"time"
 )
 
 type Response struct {
@@ -28,6 +27,11 @@ func input() string {
 	value, _ := reader.ReadString('\n') // Lê até a quebra de linha
 	value = strings.TrimSpace(value)    // Remove espaços extras e a quebra de linha
 	return value
+}
+
+func waitForEnter() {
+	fmt.Println("Pressione Enter para continuar...")
+	reader.ReadString('\n') // Aguarda até que o usuário pressione Enter
 }
 
 func clearConsole() {
@@ -176,10 +180,13 @@ func defaultMenu() {
 			var origin, destination string
 			origin, destination = chooseRoute()
 			// //Busca no servidor os trechos disponíveis entre a origem e o destino
+			fmt.Println("Buscando passagens disponíveis...")
 			response, err := availableTickets(origin, destination)
+			clearConsole()
 			if err != nil {
 				fmt.Println(err)
-				return
+				waitForEnter()
+				continue
 			}
 			//Mostra ao usuário as rotas disponíveis e deixa ele escolher
 			showTicket(response)
@@ -188,7 +195,8 @@ func defaultMenu() {
 			responseBuy, errBuy := buyTicket(selectedTicket)
 			if errBuy != nil {
 				fmt.Println(errBuy)
-				return
+				waitForEnter()
+				continue
 			}
 			if responseBuy.Status == 200 {
 				fmt.Println("Compra efetuada com sucesso")
@@ -197,7 +205,7 @@ func defaultMenu() {
 			} else {
 				fmt.Println("Ocorreu um erro inesperado ao efetuar a comprar, cheque suas passagens")
 			}
-			time.Sleep(5 * time.Second)
+			waitForEnter()
 
 		case 2:
 			clearConsole()
