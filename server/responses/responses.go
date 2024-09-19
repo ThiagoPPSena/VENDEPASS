@@ -8,7 +8,6 @@ import (
 	"net"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // Definição da estrutura para representar um trecho/passagem
@@ -69,9 +68,8 @@ func handleConnection(conn net.Conn) {
 	if err != nil {
 		fmt.Println("Erro na leitura do servidor")
 	}
-	request := string(buffer[:n]) //Requisição do cliente
-	fmt.Println(request)
 	fmt.Println("Mensagem recebida pelo cliente")
+	request := string(buffer[:n]) //Requisição do cliente
 
 	// Processar a requisição recebida
 	response, err := proccessRequest(request)
@@ -151,8 +149,6 @@ func get(origin string, destination string) ([]byte, error) {
 }
 
 func buy(count int, routes []string, cpf string) ([]byte, error) {
-	// Criar um delay de 5 segundos
-	time.Sleep(5 * time.Second)
 
 	purchaseMap := make(map[string]int)
 	i := 0
@@ -178,8 +174,6 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		for index, route := range graphs.Graph[origin] {
 			if route.To == destination {
 				routeFound = true
-				fmt.Printf("Destino encontrado: %s\n", destination)
-				fmt.Printf("Assentos: %d\n", route.Seats)
 				if route.Seats > 0 { // Se tiver assento disponível
 					purchaseMap[origin] = index
 				} else {
@@ -249,6 +243,7 @@ func getall(cpf string) ([]byte, error) {
 
 	// Convertendo o map para JSON
 	myPassagesFormatted, err := formatGetAllResponse(myPassages)
+	fmt.Println(myPassagesFormatted)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
 	}
