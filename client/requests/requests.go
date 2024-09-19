@@ -43,6 +43,7 @@ func StringGet(origin string, destination string) string {
 }
 
 // BUY
+// HEADER
 // COUNT=2
 // FEIRA DE SANTANA/SALVADOR
 // SALVADOR/SAO PAULO

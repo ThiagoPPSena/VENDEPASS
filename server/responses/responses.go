@@ -2,11 +2,13 @@ package responses
 
 import (
 	"VENDEPASS/server/graphs"
+	"VENDEPASS/server/passages"
 	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Definição da estrutura para representar um trecho/passagem
@@ -16,9 +18,19 @@ type Route struct {
 }
 
 // Definição da estrutura para representar a resposta JSON
-type Response struct {
+type ResponseGet struct {
 	Status int       `json:"status"`
 	Routes [][]Route `json:"routes"`
+}
+
+type ResponseBuy struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
+type ResponseGetAll struct {
+	Status   int                   `json:"status"`
+	Passages []passages.MyPassages `json:"passages"`
 }
 
 func ReceiveRequest() {
@@ -58,6 +70,7 @@ func handleConnection(conn net.Conn) {
 		fmt.Println("Erro na leitura do servidor")
 	}
 	request := string(buffer[:n]) //Requisição do cliente
+	fmt.Println(request)
 	fmt.Println("Mensagem recebida pelo cliente")
 
 	// Processar a requisição recebida
@@ -72,6 +85,22 @@ func handleConnection(conn net.Conn) {
 	if err != nil {
 		fmt.Println("Erro ao enviar resposta: ", err)
 	}
+}
+
+// Função que formata a resposta do GET ALL
+func formatGetAllResponse(passages []passages.MyPassages) ([]byte, error) {
+	response := ResponseGetAll{
+		Status:   200,
+		Passages: passages,
+	}
+
+	// Converte a estrutura para JSON
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
+	}
+
+	return jsonResponse, nil
 }
 
 // Função que formata a resposta do GET
@@ -89,7 +118,7 @@ func formatGetResponse(routes [][]string) ([]byte, error) {
 	}
 
 	// Criar a resposta com status e as rotas
-	response := Response{
+	response := ResponseGet{
 		Status: 200,
 		Routes: formattedRoutes,
 	}
@@ -121,44 +150,109 @@ func get(origin string, destination string) ([]byte, error) {
 	return response, nil
 }
 
-func buy(count int, routes []string) ([]byte, error) {
+func buy(count int, routes []string, cpf string) ([]byte, error) {
 	// Criar um delay de 5 segundos
-	// time.Sleep(5 * time.Second)
+	time.Sleep(5 * time.Second)
 
-	var purchaseList []string
+	purchaseMap := make(map[string]int)
 	i := 0
 	for i < count {
 		origin := strings.Split(routes[i], "/")[0]
 		destination := strings.Split(routes[i], "/")[1]
 
 		if graphs.Graph[origin] == nil {
-			return []byte("Nenhuma cidade com essa origem"), nil
+			response := ResponseBuy{
+				Message: fmt.Sprintf("Nenhuma cidade com essa origem: %s", origin),
+				Status:  404,
+			}
+
+			jsonResponse, err := json.Marshal(response)
+			if err != nil {
+				return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
+			}
+
+			return jsonResponse, nil
 		}
 
+		routeFound := false
 		for index, route := range graphs.Graph[origin] {
 			if route.To == destination {
+				routeFound = true
 				fmt.Printf("Destino encontrado: %s\n", destination)
 				fmt.Printf("Assentos: %d\n", route.Seats)
-				if route.Seats > 0 {
-					graphs.Graph[origin][index].Seats -= 1 // Comprou a passagem
-					response := fmt.Sprintf("Compra da passagem de %s a %s efetuada\n", origin, destination)
-					purchaseList = append(purchaseList, response)
+				if route.Seats > 0 { // Se tiver assento disponível
+					purchaseMap[origin] = index
 				} else {
-					response := fmt.Sprintf("Passagens esgotadas de %s a %s\n", origin, destination)
-					purchaseList = append(purchaseList, response)
+					response := ResponseBuy{
+						Message: fmt.Sprintf("Passagens esgotadas de %s a %s", origin, destination),
+						Status:  204,
+					}
+
+					jsonResponse, err := json.Marshal(response)
+					if err != nil {
+						return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
+					}
+
+					return jsonResponse, nil
 				}
 			}
+		}
+
+		if !routeFound {
+			response := ResponseBuy{
+				Message: fmt.Sprintf("Nenhuma rota encontrada de %s a %s", origin, destination),
+				Status:  404,
+			}
+
+			jsonResponse, err := json.Marshal(response)
+			if err != nil {
+				return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
+			}
+			return jsonResponse, nil
 		}
 		i++
 	}
 
-	response, err := json.Marshal(purchaseList)
+	for key, value := range purchaseMap {
+		// Comprando as passagens
+		graphs.Graph[key][value].Seats -= 1
+
+		// Salvando as passagens do cliente
+		destination := graphs.Graph[key][value].To
+		// Criando um novo objeto MyPassages
+		newPassage := passages.MyPassages{
+			From: key,
+			To:   destination,
+		}
+
+		// Adicionando o objeto ao map na chave cpf
+		passages.Passages[cpf] = append(passages.Passages[cpf], newPassage)
+	}
+
+	response := ResponseBuy{
+		Message: "Passagens compradas com sucesso",
+		Status:  200,
+	}
+
+	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
 	}
 
-	return response, nil
+	return jsonResponse, nil
 
+}
+
+func getall(cpf string) ([]byte, error) {
+
+	myPassages := passages.Passages[cpf]
+
+	// Convertendo o map para JSON
+	myPassagesFormatted, err := formatGetAllResponse(myPassages)
+	if err != nil {
+		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
+	}
+	return myPassagesFormatted, nil
 }
 
 func proccessRequest(request string) ([]byte, error) {
@@ -170,9 +264,13 @@ func proccessRequest(request string) ([]byte, error) {
 		destination := requestSepareted[2]
 		return get(origin, destination)
 	} else if strings.ToUpper(method) == "BUY" {
-		count, _ := strconv.Atoi(strings.Split(requestSepareted[1], "=")[1])
-		routes := requestSepareted[2:]
-		return buy(count, routes)
+		cpf := strings.Split(requestSepareted[1], " ")[1]
+		count, _ := strconv.Atoi(strings.Split(requestSepareted[2], "=")[1])
+		routes := requestSepareted[3:]
+		return buy(count, routes, cpf)
+	} else if strings.ToUpper(method) == "GETALL" {
+		cpf := strings.Split(requestSepareted[1], " ")[1]
+		return getall(cpf)
 	}
 
 	return nil, nil

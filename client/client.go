@@ -10,6 +10,6 @@ func main() {
 	requests.ServerAddress = "localhost"
 	requests.ServerPort = "8080"
 
-	response := requests.RequestServer("BUY\nCOUNT=2\nRECIFE/SALVADOR\nSALVADOR/SAO PAULO")
+	response := requests.RequestServer("GETALL\nHEADER 06417600513")
 	fmt.Println(response)
 }
