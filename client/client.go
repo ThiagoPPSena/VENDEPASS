@@ -21,6 +21,12 @@ type ResponseBuy struct {
 	Message string `json:"routes"`
 }
 
+// {"status":200,"passages":[{"From":"RECIFE","To":"JOAO PESSOA"},{"From":"JOAO PESSOA","To":"ARACAJU"},{"From":"ARACAJU","To":"SALVADOR"}]}
+type ResponseGetAll struct {
+	Status   int              `json:"status"`
+	Passages []requests.Route `json:"passages"`
+}
+
 var reader = bufio.NewReader(os.Stdin)
 
 func input() string {
@@ -148,6 +154,12 @@ func showTicket(response Response) {
 	}
 }
 
+func showTicketPurchased(passages []requests.Route) {
+	for i, route := range passages {
+		fmt.Printf("Passagem %d: %s -> %s\n", i+1, route.From, route.To)
+	}
+}
+
 func chooseTicket(response Response) []requests.Route {
 	var option int
 
@@ -210,7 +222,26 @@ func defaultMenu() {
 			waitForEnter()
 		case 2:
 			clearConsole()
-			availableTickets("Feira de Santana", "São Paulo")
+			fmt.Println("Buscando suas passagens...")
+			request := requests.StringGetAll()
+			response, err := requests.RequestServer(request)
+			if err != nil {
+				fmt.Println(err)
+				waitForEnter()
+				continue
+			}
+			data, err := decodeResponse[ResponseGetAll](response)
+			if err != nil {
+				fmt.Println(err)
+				waitForEnter()
+				continue
+			}
+			if data.Passages == nil {
+				fmt.Println("Você não possui passagens compradas")
+			} else {
+				showTicketPurchased(data.Passages)
+			}
+			waitForEnter()
 		case 3:
 			clearConsole()
 			fmt.Println("Saindo...")
@@ -222,7 +253,7 @@ func defaultMenu() {
 }
 
 func main() {
-	requests.ServerAddress = "192.168.227.102"
+	requests.ServerAddress = "172.16.103.11"
 	requests.ServerPort = "8080"
 
 	cpf := identificationMenu()

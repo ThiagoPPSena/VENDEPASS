@@ -55,6 +55,7 @@ func StringGet(origin string, destination string) string {
 }
 
 // BUY
+// HEADER 00000000000
 // COUNT=2
 // FEIRA DE SANTANA/SALVADOR
 // SALVADOR/SAO PAULO
@@ -63,7 +64,7 @@ func StringBuy(routes []Route) string {
 	// Cria um slice para armazenar as strings formatadas das rotas
 	var routeStrings []string
 	for _, route := range routes {
-		// Formata cada rota como "origem-destino"
+		// Formata cada rota como "origem/destino"
 		routeStrings = append(routeStrings, route.From+"/"+route.To)
 	}
 
@@ -71,6 +72,15 @@ func StringBuy(routes []Route) string {
 	routesJoined := strings.Join(routeStrings, "\n")
 
 	// Cria a string da requisição
-	request := "BUY\n" + "COUNT=" + strconv.Itoa(len(routes)) + "\n" + routesJoined
+	request := "BUY\n" + "HEADER " + HeaderCpf + "\n" + "COUNT=" + strconv.Itoa(len(routes)) + "\n" + routesJoined
+	return request
+}
+
+// GETALL
+// CPF 00000000000
+
+// Função para gerar a string de requisição para obter todas as rotas
+func StringGetAll() string {
+	request := "GETALL\n" + "CPF " + HeaderCpf
 	return request
 }
