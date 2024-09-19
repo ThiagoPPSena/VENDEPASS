@@ -18,7 +18,7 @@ type Response struct {
 
 type ResponseBuy struct {
 	Status  int    `json:"status"`
-	Message string `json:"routes"`
+	Message string `json:"message"`
 }
 
 // {"status":200,"passages":[{"From":"RECIFE","To":"JOAO PESSOA"},{"From":"JOAO PESSOA","To":"ARACAJU"},{"From":"ARACAJU","To":"SALVADOR"}]}
@@ -162,9 +162,14 @@ func showTicketPurchased(passages []requests.Route) {
 
 func chooseTicket(response Response) []requests.Route {
 	var option int
-
 	fmt.Println("Escolha qual passagem deseja comprar")
-	fmt.Scanln(&option)
+	for {
+		fmt.Scanln(&option)
+		if option > 0 && option <= len(response.Routes) {
+			break
+		}
+		fmt.Println("Opção inválida, tente novamente.")
+	}
 	selectedTicket := response.Routes[option-1]
 	clearConsole()
 	for i, route := range selectedTicket {
