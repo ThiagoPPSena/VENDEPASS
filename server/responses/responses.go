@@ -6,14 +6,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 // Definição da estrutura para representar um trecho/passagem
 type Route struct {
-	From string `json:"From"`
-	To   string `json:"To"`
+	From string `json:"from"`
+	To   string `json:"to"`
 }
 
 // Definição da estrutura para representar a resposta JSON
@@ -63,7 +64,7 @@ func handleConnection(conn net.Conn) {
 	fmt.Println("Nova conexão estabelecida: ", conn.RemoteAddr())
 
 	// Buffer para receber a mensagem do cliente
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 3072)
 	n, err := conn.Read(buffer)
 	if err != nil {
 		fmt.Println("Erro na leitura do servidor")
@@ -139,6 +140,16 @@ func get(origin string, destination string) ([]byte, error) {
 
 	// Método para saber todas as rotas possíveis
 	graphs.FindRoutes(graphs.Graph, origin, destination, visited, path, &allPaths)
+
+	// Ordenando da menor rota para a maior
+	sort.Slice(allPaths, func(i, j int) bool {
+		return len(allPaths[i]) < len(allPaths[j])
+	})
+
+	// Pegando as 10 menores rotas disponíveis
+	if len(allPaths) >= 10 {
+		allPaths = allPaths[:10]
+	}
 
 	response, err := formatGetResponse(allPaths) // Formatando a resposta pra envio pro cliente
 	if err != nil {
@@ -243,7 +254,6 @@ func getall(cpf string) ([]byte, error) {
 
 	// Convertendo o map para JSON
 	myPassagesFormatted, err := formatGetAllResponse(myPassages)
-	fmt.Println(myPassagesFormatted)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
 	}

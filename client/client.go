@@ -86,10 +86,12 @@ func availableTickets(origin string, destination string) (Response, error) {
 	request := requests.StringGet(origin, destination)
 	// Envia a requisição para o servidor
 	response, err := requests.RequestServer(request)
+	waitForEnter()
 	if err != nil {
 		return Response{}, err
 	}
 	data, err := decodeResponse[Response](response)
+
 	if err != nil {
 		return Response{}, err
 	}
@@ -258,7 +260,7 @@ func defaultMenu() {
 }
 
 func main() {
-	requests.ServerAddress = "172.16.103.11"
+	requests.ServerAddress = "localhost"
 	requests.ServerPort = "8080"
 
 	cpf := identificationMenu()
