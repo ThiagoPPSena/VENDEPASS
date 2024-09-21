@@ -31,34 +31,6 @@ func ReadRoutes() {
 	}
 }
 
-// var Graph = map[string][]Route{
-// 	"SALVADOR":    {{From: "SALVADOR", To: "SAO PAULO", Seats: 50}, {From: "SALVADOR", To: "RECIFE", Seats: 50}},
-// 	"RECIFE":      {{From: "RECIFE", To: "SAO PAULO", Seats: 50}, {From: "RECIFE", To: "SALVADOR", Seats: 1}, {From: "RECIFE", To: "JOAO PESSOA", Seats: 50}},
-// 	"SAO PAULO":   {{From: "SAO PAULO", To: "SALVADOR", Seats: 50}},
-// 	"JOAO PESSOA": {{From: "JOAO PESSOA", To: "ARACAJU", Seats: 50}, {From: "JOAO PESSOA", To: "SALVADOR", Seats: 50}},
-// 	"ARACAJU":     {{From: "ARACAJU", To: "SALVADOR", Seats: 50}},
-// } // Grafo de voos
-
-// // Método para econtrar todas as rotas disponíveis dada uma origem e destino
-// func FindRoutes(graph map[string][]Route, origin string, destination string, visited map[string]bool, path []string, allpaths *[][]string) {
-// 	visited[origin] = true
-// 	path = append(path, origin)
-
-// 	if origin == destination {
-// 		*allpaths = append(*allpaths, path)
-// 		visited[origin] = false
-// 		path = nil
-// 		return
-// 	}
-
-// 	for _, neighbor := range graph[origin] {
-// 		if neighbor.Seats > 0 && !visited[neighbor.To] {
-// 			FindRoutes(graph, neighbor.To, destination, visited, path, allpaths)
-// 		}
-// 	}
-
-// }
-
 // Método para encontrar todas as rotas disponíveis dada uma origem e destino
 func FindRoutes(graph map[string][]Route, origin string, destination string, visited map[string]bool, path []string, allpaths *[][]string) {
 	visited[origin] = true
@@ -80,4 +52,25 @@ func FindRoutes(graph map[string][]Route, origin string, destination string, vis
 
 	// Marca como não visitado (permite outras rotas usarem essa cidade novamente)
 	visited[origin] = false
+}
+
+func SaveSeats() {
+
+	// Abre o arquivo JSON existente com as opções de sobrescrita
+	file, err := os.OpenFile("server/files/routes.json", os.O_WRONLY|os.O_TRUNC, 0)
+	if err != nil {
+		fmt.Println("Erro ao abrir o arquivo:", err)
+		return
+	}
+	defer file.Close() // Garante que o arquivo será fechado no final
+
+	// Converte os dados para JSON e escreve no arquivo
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ") // Indenta o JSON para uma melhor legibilidade
+	err = encoder.Encode(Graph)
+	if err != nil {
+		fmt.Println("Erro ao escrever os dados no arquivo:", err)
+		return
+	}
+
 }

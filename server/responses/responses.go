@@ -234,6 +234,11 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		passages.Passages[cpf] = append(passages.Passages[cpf], newPassage)
 	}
 
+	// Persiste as passagens compradas em arquivo JSON
+	passages.SavePassages()
+	// Persiste a compra dos assentos em arquivo JSON
+	graphs.SaveSeats()
+
 	response := ResponseBuy{
 		Message: "Passagens compradas com sucesso",
 		Status:  200,
