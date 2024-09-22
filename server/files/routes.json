@@ -3,90 +3,90 @@
     {
       "From": "ARACAJU",
       "To": "SALVADOR",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "ARACAJU",
       "To": "SAO PAULO",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "ARACAJU",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     }
   ],
   "BELO HORIZONTE": [
     {
       "From": "BELO HORIZONTE",
       "To": "SALVADOR",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "BELO HORIZONTE",
       "To": "FORTALEZA",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "BELO HORIZONTE",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "BELO HORIZONTE",
       "To": "RIO DE JANEIRO",
-      "Seats": 10000
+      "Seats": 500
     }
   ],
   "FORTALEZA": [
     {
       "From": "FORTALEZA",
       "To": "SAO PAULO",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "FORTALEZA",
       "To": "RIO DE JANEIRO",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "FORTALEZA",
       "To": "SALVADOR",
-      "Seats": 9521
+      "Seats": 500
     },
     {
       "From": "FORTALEZA",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     }
   ],
   "JOAO PESSOA": [
     {
       "From": "JOAO PESSOA",
       "To": "ARACAJU",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "JOAO PESSOA",
       "To": "SALVADOR",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "JOAO PESSOA",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "JOAO PESSOA",
       "To": "RIO DE JANEIRO",
-      "Seats": 9521
+      "Seats": 500
     }
   ],
   "NATAL": [
     {
       "From": "NATAL",
       "To": "SAO PAULO",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "NATAL",
@@ -96,7 +96,7 @@
     {
       "From": "NATAL",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     }
   ],
   "RECIFE": [
@@ -108,78 +108,78 @@
     {
       "From": "RECIFE",
       "To": "SALVADOR",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "RECIFE",
       "To": "JOAO PESSOA",
-      "Seats": 9521
+      "Seats": 500
     },
     {
       "From": "RECIFE",
       "To": "RIO DE JANEIRO",
-      "Seats": 10000
+      "Seats": 500
     }
   ],
   "RIO DE JANEIRO": [
     {
       "From": "RIO DE JANEIRO",
       "To": "SALVADOR",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "RIO DE JANEIRO",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "RIO DE JANEIRO",
       "To": "JOAO PESSOA",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "RIO DE JANEIRO",
       "To": "FORTALEZA",
-      "Seats": 9521
+      "Seats": 500
     }
   ],
   "SALVADOR": [
     {
       "From": "SALVADOR",
       "To": "SAO PAULO",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "SALVADOR",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "SALVADOR",
       "To": "RIO DE JANEIRO",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "SALVADOR",
       "To": "BELO HORIZONTE",
-      "Seats": 10000
+      "Seats": 500
     }
   ],
   "SAO PAULO": [
     {
       "From": "SAO PAULO",
       "To": "SALVADOR",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "SAO PAULO",
       "To": "RECIFE",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "SAO PAULO",
       "To": "FORTALEZA",
-      "Seats": 10000
+      "Seats": 500
     },
     {
       "From": "SAO PAULO",

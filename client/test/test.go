@@ -1,10 +1,11 @@
 package main
 
 import (
-	"client/requests"
-	"encoding/json"
-	"fmt"
-	"sync"
+    "client/requests"
+    "encoding/json"
+    "fmt"
+    "sync"
+    "time"
 )
 
 type Response struct {
@@ -49,16 +50,27 @@ func main() {
     }
 
     var wg sync.WaitGroup
-    numGoroutines := 40 // Número de goroutines para simular compras concorrentes
+    numGoroutines := 20 // Número de goroutines para simular compras concorrentes
+
+    var mu sync.Mutex
+    var maxDuration time.Duration
 
     for i := 0; i < numGoroutines; i++ {
         wg.Add(1)
         go func() {
             defer wg.Done()
-            for j := 0; j < 500; j++ { // Número de compras por goroutine
+            for j := 0; j < 50; j++ { // Número de compras por goroutine
                 if len(data.Routes) > 9 {
+                    start := time.Now()
                     requestBuy := requests.StringBuy(data.Routes[9])
                     responseBuy, errResponseBuy := requests.RequestServer(requestBuy)
+                    duration := time.Since(start)
+
+                    mu.Lock()
+                    if duration > maxDuration {
+                        maxDuration = duration
+                    }
+                    mu.Unlock()
 
                     if errResponseBuy != nil {
                         fmt.Printf("Erro ao fazer a requisição: %v\n", errResponseBuy)
@@ -79,5 +91,5 @@ func main() {
     }
 
     wg.Wait() // Espera todas as goroutines terminarem
-    fmt.Println("Todas as compras foram processadas")
+    fmt.Printf("Todas as compras foram processadas. Maior tempo de resposta: %v\n", maxDuration)
 }
