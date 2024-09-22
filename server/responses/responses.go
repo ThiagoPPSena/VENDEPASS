@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // Definição da estrutura para representar um trecho/passagem
@@ -82,7 +83,7 @@ func handleConnection(conn net.Conn) {
 	// Enviar uma resposta ao cliente
 	_, err = conn.Write(response)
 	if err != nil {
-		fmt.Println("Erro ao enviar resposta: ", err)
+		fmt.Println("Erro ao enviar resposta: ")
 	}
 }
 
@@ -159,7 +160,11 @@ func get(origin string, destination string) ([]byte, error) {
 	return response, nil
 }
 
+var mutex = &sync.Mutex{}
+
 func buy(count int, routes []string, cpf string) ([]byte, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
 
 	purchaseMap := make(map[string]int)
 	i := 0
@@ -217,7 +222,6 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		}
 		i++
 	}
-
 	for key, value := range purchaseMap {
 		// Comprando as passagens
 		graphs.Graph[key][value].Seats -= 1
