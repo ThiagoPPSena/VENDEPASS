@@ -15,7 +15,7 @@ var Passages = map[string][]MyPassages{}
 
 func GetPassages() {
 	// Abre o arquivo JSON em modo de leitura
-	file, err := os.Open("server/files/myPassages.json")
+	file, err := os.Open("./files/myPassages.json")
 	if err != nil {
 		fmt.Println("Erro ao abrir o arquivo:", err)
 		return
@@ -34,7 +34,7 @@ func GetPassages() {
 func SavePassages() {
 
 	// Abre o arquivo JSON existente com as opções de sobrescrita
-	file, err := os.OpenFile("server/files/myPassages.json", os.O_WRONLY|os.O_TRUNC, 0)
+	file, err := os.OpenFile("./files/myPassages.json", os.O_WRONLY|os.O_TRUNC, 0)
 	if err != nil {
 		fmt.Println("Erro ao abrir o arquivo:", err)
 		return

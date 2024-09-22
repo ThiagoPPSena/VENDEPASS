@@ -1,9 +1,9 @@
 package main
 
 import (
-	"VENDEPASS/server/graphs"
-	"VENDEPASS/server/passages"
-	"VENDEPASS/server/responses"
+	"server/graphs"
+	"server/passages"
+	"server/responses"
 )
 
 func main() {

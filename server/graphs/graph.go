@@ -16,7 +16,7 @@ var Graph map[string][]Route
 
 func ReadRoutes() {
 	// Abre o arquivo JSON
-	file, err := os.Open("server/files/routes.json")
+	file, err := os.Open("./files/routes.json")
 	if err != nil {
 		fmt.Println("Erro ao abrir o arquivo:", err)
 		return
@@ -57,7 +57,7 @@ func FindRoutes(graph map[string][]Route, origin string, destination string, vis
 func SaveSeats() {
 
 	// Abre o arquivo JSON existente com as opções de sobrescrita
-	file, err := os.OpenFile("server/files/routes.json", os.O_WRONLY|os.O_TRUNC, 0)
+	file, err := os.OpenFile("./files/routes.json", os.O_WRONLY|os.O_TRUNC, 0)
 	if err != nil {
 		fmt.Println("Erro ao abrir o arquivo:", err)
 		return

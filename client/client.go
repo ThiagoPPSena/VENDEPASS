@@ -1,8 +1,8 @@
 package main
 
 import (
-	"VENDEPASS/client/requests"
 	"bufio"
+	"client/requests"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -271,8 +271,15 @@ func defaultMenu() {
 }
 
 func main() {
-	requests.ServerAddress = "localhost"
-	requests.ServerPort = "8080"
+   // Lê o endereço do servidor e a porta a partir de variáveis de ambiente
+	 serverAddress := os.Getenv("SERVER_ADDRESS")
+	 serverPort := os.Getenv("SERVER_PORT")
+	 if serverAddress != "" {
+		requests.ServerAddress = serverAddress
+	 }
+	 if serverPort != "" {
+		requests.ServerPort = serverPort
+	 }
 
 	cpf := identificationMenu()
 	requests.HeaderCpf = cpf

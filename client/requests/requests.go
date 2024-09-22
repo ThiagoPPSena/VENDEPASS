@@ -24,6 +24,8 @@ func RequestServer(request string) ([]byte, error) {
 	//Conectar ao servidor tcp porta 8080
 	connect, err := net.DialTimeout("tcp", ServerAddress+":"+ServerPort, ConnectionTimeout)
 	if err != nil {
+		fmt.Print(err)
+		time.Sleep(10 * time.Second)
 		return nil, fmt.Errorf("falha na conexão com o servidor")
 	}
 	//Garantir que a conexão será fechada

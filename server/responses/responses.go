@@ -1,11 +1,11 @@
 package responses
 
 import (
-	"VENDEPASS/server/graphs"
-	"VENDEPASS/server/passages"
 	"encoding/json"
 	"fmt"
 	"net"
+	"server/graphs"
+	"server/passages"
 	"sort"
 	"strconv"
 	"strings"

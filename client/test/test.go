@@ -1,7 +1,7 @@
 package main
 
 import (
-	"VENDEPASS/client/requests"
+	"client/requests"
 	"encoding/json"
 	"fmt"
 )
@@ -16,11 +16,11 @@ type ResponseBuy struct {
 	Message string `json:"message"`
 }
 
-// {"status":200,"passages":[{"From":"RECIFE","To":"JOAO PESSOA"},{"From":"JOAO PESSOA","To":"ARACAJU"},{"From":"ARACAJU","To":"SALVADOR"}]}
 type ResponseGetAll struct {
 	Status   int              `json:"status"`
 	Passages []requests.Route `json:"passages"`
 }
+
 
 func decodeResponse[T any](response []byte) (T, error) {
 	var decodedData T
