@@ -1,19 +1,21 @@
 package responses
 
 import (
-	"VENDEPASS/server/graphs"
-	"VENDEPASS/server/passages"
 	"encoding/json"
 	"fmt"
 	"net"
+	"server/graphs"
+	"server/passages"
+	"sort"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // Definição da estrutura para representar um trecho/passagem
 type Route struct {
-	From string `json:"From"`
-	To   string `json:"To"`
+	From string `json:"from"`
+	To   string `json:"to"`
 }
 
 // Definição da estrutura para representar a resposta JSON
@@ -63,7 +65,7 @@ func handleConnection(conn net.Conn) {
 	fmt.Println("Nova conexão estabelecida: ", conn.RemoteAddr())
 
 	// Buffer para receber a mensagem do cliente
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 3072)
 	n, err := conn.Read(buffer)
 	if err != nil {
 		fmt.Println("Erro na leitura do servidor")
@@ -81,7 +83,7 @@ func handleConnection(conn net.Conn) {
 	// Enviar uma resposta ao cliente
 	_, err = conn.Write(response)
 	if err != nil {
-		fmt.Println("Erro ao enviar resposta: ", err)
+		fmt.Println("Erro ao enviar resposta: ")
 	}
 }
 
@@ -140,6 +142,16 @@ func get(origin string, destination string) ([]byte, error) {
 	// Método para saber todas as rotas possíveis
 	graphs.FindRoutes(graphs.Graph, origin, destination, visited, path, &allPaths)
 
+	// Ordenando da menor rota para a maior
+	sort.Slice(allPaths, func(i, j int) bool {
+		return len(allPaths[i]) < len(allPaths[j])
+	})
+
+	// Pegando as 10 menores rotas disponíveis
+	if len(allPaths) >= 10 {
+		allPaths = allPaths[:10]
+	}
+
 	response, err := formatGetResponse(allPaths) // Formatando a resposta pra envio pro cliente
 	if err != nil {
 		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
@@ -148,7 +160,11 @@ func get(origin string, destination string) ([]byte, error) {
 	return response, nil
 }
 
+var mutex = &sync.Mutex{}
+
 func buy(count int, routes []string, cpf string) ([]byte, error) {
+	mutex.Lock()
+	defer mutex.Unlock()
 
 	purchaseMap := make(map[string]int)
 	i := 0
@@ -206,7 +222,6 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		}
 		i++
 	}
-
 	for key, value := range purchaseMap {
 		// Comprando as passagens
 		graphs.Graph[key][value].Seats -= 1
@@ -222,6 +237,11 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		// Adicionando o objeto ao map na chave cpf
 		passages.Passages[cpf] = append(passages.Passages[cpf], newPassage)
 	}
+
+	// Persiste as passagens compradas em arquivo JSON
+	passages.SavePassages()
+	// Persiste a compra dos assentos em arquivo JSON
+	graphs.SaveSeats()
 
 	response := ResponseBuy{
 		Message: "Passagens compradas com sucesso",
@@ -243,7 +263,6 @@ func getall(cpf string) ([]byte, error) {
 
 	// Convertendo o map para JSON
 	myPassagesFormatted, err := formatGetAllResponse(myPassages)
-	fmt.Println(myPassagesFormatted)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao gerar JSON: %w", err)
 	}

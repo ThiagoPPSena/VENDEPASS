@@ -1,8 +1,8 @@
 package main
 
 import (
-	"VENDEPASS/client/requests"
 	"bufio"
+	"client/requests"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -21,7 +21,6 @@ type ResponseBuy struct {
 	Message string `json:"message"`
 }
 
-// {"status":200,"passages":[{"From":"RECIFE","To":"JOAO PESSOA"},{"From":"JOAO PESSOA","To":"ARACAJU"},{"From":"ARACAJU","To":"SALVADOR"}]}
 type ResponseGetAll struct {
 	Status   int              `json:"status"`
 	Passages []requests.Route `json:"passages"`
@@ -90,6 +89,7 @@ func availableTickets(origin string, destination string) (Response, error) {
 		return Response{}, err
 	}
 	data, err := decodeResponse[Response](response)
+
 	if err != nil {
 		return Response{}, err
 	}
@@ -132,7 +132,7 @@ func identificationMenu() string {
 		fmt.Println("Faça sua indentificação: ")
 		fmt.Print(ternaryString(invalidCpf, "CPF inválido\nDigite um CPF válido: ", "Digite seu CPF: "))
 		invalidCpf = false
-		fmt.Scan(&cpf)
+		fmt.Scanln(&cpf)
 		if len(cpf) != 11 {
 			invalidCpf = true
 		}
@@ -142,40 +142,47 @@ func identificationMenu() string {
 
 func showTicket(response Response) {
 	for i, routeSet := range response.Routes {
-		fmt.Println("")
-		fmt.Printf("Passagem %d: ", i+1)
+		fmt.Printf("Passagem %2d: ", i+1)
 		for j, route := range routeSet {
 			if len(routeSet)-1 == j {
-				fmt.Printf(" Trecho %d: %s -> %s\n", j+1, route.From, route.To)
+				fmt.Printf("%s -> %s\n", route.From, route.To)
 			} else {
-				fmt.Printf("  Trecho %d: %s -> %s", j+1, route.From, route.To)
+				fmt.Printf("%s -> %s / ", route.From, route.To)
 			}
 		}
 	}
 }
 
 func showTicketPurchased(passages []requests.Route) {
+	fmt.Println("Passagens compradas: ")
 	for i, route := range passages {
-		fmt.Printf("Passagem %d: %s -> %s\n", i+1, route.From, route.To)
+		fmt.Printf("Passagem %2d: %s -> %s\n", i+1, route.From, route.To)
 	}
 }
 
 func chooseTicket(response Response) []requests.Route {
 	var option int
-	fmt.Println("Escolha qual passagem deseja comprar")
-	for {
+	incorrectOption := false
+	for {	
+		clearConsole()
+		showTicket(response)
+		fmt.Print(ternaryString(incorrectOption, "Passagem inválida, tente novamente: ", "Escolha uma passagem: "))
 		fmt.Scanln(&option)
 		if option > 0 && option <= len(response.Routes) {
 			break
 		}
-		fmt.Println("Opção inválida, tente novamente.")
+		incorrectOption = true
 	}
 	selectedTicket := response.Routes[option-1]
 	clearConsole()
 	for i, route := range selectedTicket {
-		fmt.Printf("Trecho %d: %s -> %s ", i+1, route.From, route.To)
+		if len(selectedTicket)-1 == i {
+			fmt.Printf("%s -> %s\n", route.From, route.To)
+		} else {
+			fmt.Printf("%s -> %s / ", route.From, route.To)
+		}
 	}
-	fmt.Printf("\nVocê escolheu a passagem %d, com os trechos acima!", option)
+	fmt.Printf("Você escolheu a passagem %d, com os trechos acima!\n", option)
 	return selectedTicket
 }
 
@@ -196,7 +203,7 @@ func defaultMenu() {
 			//Primeiro faz o usuario escolher a rota desejada
 			var origin, destination string
 			origin, destination = chooseRoute()
-			// //Busca no servidor os trechos disponíveis entre a origem e o destino
+			// Busca no servidor os trechos disponíveis entre a origem e o destino
 			fmt.Println("Buscando passagens disponíveis...")
 			response, err := availableTickets(origin, destination)
 			clearConsole()
@@ -206,8 +213,13 @@ func defaultMenu() {
 				continue
 			}
 			//Mostra ao usuário as rotas disponíveis e deixa ele escolher
-			showTicket(response)
+			if len(response.Routes) == 0 {
+				fmt.Println("Não há passagens disponíveis para essa rota")
+				waitForEnter()
+				continue
+			}
 			selectedTicket := chooseTicket(response)
+			waitForEnter()
 			//Quando tiver as rotas escolhidas, chama a função de compra de passagem
 			fmt.Println("Comprando passagem...")
 			responseBuy, errBuy := buyTicket(selectedTicket)
@@ -218,7 +230,7 @@ func defaultMenu() {
 				continue
 			}
 			if responseBuy.Status == 200 {
-				fmt.Println("Compra efetuada com sucesso")
+				fmt.Println("Compra efetuada com sucesso!")
 			} else if responseBuy.Status == 204 {
 				fmt.Println(responseBuy.Message)
 			} else {
@@ -241,6 +253,7 @@ func defaultMenu() {
 				waitForEnter()
 				continue
 			}
+			clearConsole()
 			if data.Passages == nil {
 				fmt.Println("Você não possui passagens compradas")
 			} else {
@@ -258,8 +271,15 @@ func defaultMenu() {
 }
 
 func main() {
-	requests.ServerAddress = "172.16.103.11"
-	requests.ServerPort = "8080"
+   // Lê o endereço do servidor e a porta a partir de variáveis de ambiente
+	 serverAddress := os.Getenv("SERVER_ADDRESS")
+	 serverPort := os.Getenv("SERVER_PORT")
+	 if serverAddress != "" {
+		requests.ServerAddress = serverAddress
+	 }
+	 if serverPort != "" {
+		requests.ServerPort = serverPort
+	 }
 
 	cpf := identificationMenu()
 	requests.HeaderCpf = cpf

@@ -37,7 +37,7 @@ func RequestServer(request string) ([]byte, error) {
 	}
 
 	//Le a resposta da requisição do servidor
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 3072)
 	size, err := connect.Read(buffer)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao ler a resposta do servidor")
