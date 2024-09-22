@@ -47,7 +47,7 @@
     {
       "From": "FORTALEZA",
       "To": "RIO DE JANEIRO",
-      "Seats": 70
+      "Seats": 68
     },
     {
       "From": "FORTALEZA",
@@ -69,7 +69,7 @@
     {
       "From": "JOAO PESSOA",
       "To": "SALVADOR",
-      "Seats": 50
+      "Seats": 45
     },
     {
       "From": "JOAO PESSOA",
@@ -103,29 +103,29 @@
     {
       "From": "RECIFE",
       "To": "SAO PAULO",
-      "Seats": 50
+      "Seats": 48
     },
     {
       "From": "RECIFE",
       "To": "SALVADOR",
-      "Seats": 1
+      "Seats": 0
     },
     {
       "From": "RECIFE",
       "To": "JOAO PESSOA",
-      "Seats": 50
+      "Seats": 46
     },
     {
       "From": "RECIFE",
       "To": "RIO DE JANEIRO",
-      "Seats": 45
+      "Seats": 43
     }
   ],
   "RIO DE JANEIRO": [
     {
       "From": "RIO DE JANEIRO",
       "To": "SALVADOR",
-      "Seats": 60
+      "Seats": 57
     },
     {
       "From": "RIO DE JANEIRO",
@@ -135,7 +135,7 @@
     {
       "From": "RIO DE JANEIRO",
       "To": "JOAO PESSOA",
-      "Seats": 35
+      "Seats": 34
     },
     {
       "From": "RIO DE JANEIRO",
@@ -152,7 +152,7 @@
     {
       "From": "SALVADOR",
       "To": "RECIFE",
-      "Seats": 49
+      "Seats": 48
     },
     {
       "From": "SALVADOR",
@@ -179,7 +179,7 @@
     {
       "From": "SAO PAULO",
       "To": "FORTALEZA",
-      "Seats": 60
+      "Seats": 58
     },
     {
       "From": "SAO PAULO",
