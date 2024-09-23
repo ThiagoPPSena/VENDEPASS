@@ -81,13 +81,13 @@ Para garantir a comunicação eficiente e confiável entre os clientes e o servi
 
 | Protocolo  | Envio                       | Resposta                            |
 | ---------- | --------------------------- | ----------------------------------- |
-| TCP-GET    | GET DESTINO ORIGEM          | {"status:code, "routes":[...]}      |
+| TCP-GET    | GET ORIGEM DESTINO          | {"status:code, "routes":[...]}      |
 | TCP-GETALL | GETALL HEADER               | {"status:code, "routes":[...]}      |
 | TCP-BUY    | BUY COUNT ORIGEM/DESTINO... | {"status:code, "message":string...} |
 
 A comunicação entre cliente e servidor é realizada através de sockets TCP, garantindo uma conexão confiável, onde os dados são entregues em ordem e sem perda de pacotes. Cada cliente inicia a conexão com o servidor e, a partir disso, pode enviar diferentes tipos de requisições.
 
-O modelo de mensagem de solicitação foi desenvolvido com base no protocolo HTTP, garantindo uma estrutura familiar e intuitiva. As mensagens são compostas por um cabeçalho que define o método da requisição (como GET, GETALL e BUY) e um corpo que contém os dados necessários para a operação. As respostas a essas solicitações são enviadas em formato JSON ao cliente, facilitando a interpretação e a manipulação dos dados.
+O modelo de mensagem de solicitação foi desenvolvido com base no protocolo HTTP, garantindo uma estrutura familiar e intuitiva. As mensagens são compostas por um cabeçalho que define o método da requisição (como GET, GETALL e BUY) e um corpo que contém os dados necessários para a operação. As respostas a essas solicitações são enviadas em formato JSON ao cliente, facilitando a interpretação e a manipulação dos dados. Os status codes definidos foram 200 para OK, 204 para não conseguir a passagem no ato da compra e 404 para rota inexistente.
 
 
 ### Conexões e Dados
