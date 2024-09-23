@@ -74,7 +74,6 @@ O servidor é o primeiro componente a ser inicializado, pois ele atua como o nú
 
 Após a inicialização, o servidor fica escutando as portas TCP para gerenciar as conexões dos clientes. Quando um cliente tenta se conectar ao servidor, o servidor aceita a conexão e a trata individualmente. Para cada cliente conectado, o servidor verifica se a solicitação de compra pode ser processada e responde com a confirmação da reserva ou uma mensagem informando que o trecho já foi reservado.
 
-
 ### Protocolo de Comunicação
 
 Para garantir a comunicação eficiente e confiável entre os clientes e o servidor no sistema de compra de passagens aéreas, foi desenvolvido um protocolo de comunicação baseado em TCP/IP. Esse protocolo é responsável por organizar a troca de mensagens entre os clientes e o servidor, assegurando que as operações de consulta e compra de trechos sejam realizadas corretamente.
@@ -92,7 +91,6 @@ O modelo de mensagem de solicitação foi desenvolvido com base no protocolo HTT
 
 ### Conexões e Dados
 
-  
 Utilizando a linguagem Go, as goroutines desempenharam um papel crucial na implementação da concorrência, permitindo que múltiplas conexões fossem tratadas simultaneamente, sem comprometer o desempenho do sistema. Visto que a ideia do projeto só seguiu em frente,  devido a extrema otimização, o que permite que várias goroutines sejam criadas em paralelo mantendo sua eficiência
 
 ### Conexões com Goroutines
@@ -119,4 +117,11 @@ Além da funcionalidade de compra, a aplicação também oferece uma seção ded
 
 ## Desempenho e Confiabilidade
 
+Como já foi dito em tópicos anteriores, o servidor utiliza de goroutines, que funcionam como threads leves da própria linguagem Go. Goroutines são muito mais leves que threads do sistema operacional. Enquanto uma thread tradicional pode consumir vários MBs de memória, uma goroutine começa com apenas 2 KB (Temporin, 2023). Isso permite a criação de mais goroutines simultâneas do que threads simultâneas, sem sobrecarregar o servidor. Além da eficiência com o uso das goroutines, o sistema prioriza o uso maior da memória RAM ao invés de acesso constante ao disco. Quando o servidor inicia seu funcionamento, todas as informações persistidas no disco são salvas na RAM (que tem acesso mais rápido). O acesso ao disco só é feito quando precisa salvar operações de compras de passagens.
+
+Em relação a confiabilidade
+
 ## Conclusão
+
+## Referências
+TEMPORIN, Tiago. Quais as diferenças entre goroutines e threads. iMasters, 30 abr. 2018. Disponível em: https://imasters.com.br/go-golang/quais-as-diferencas-entre-goroutines-e-threads. Acesso em: 23 set. 2024.
