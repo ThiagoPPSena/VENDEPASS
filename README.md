@@ -16,9 +16,7 @@ Problema 1 da matéria TEC502 - Concorrência e Conectividade
 
 ## Como Executar
 
-  <div style="text-align: justify">
-  Este projeto consiste em dois sistemas distintos (Servidor e Aplicação), disponibilizados como imagens Docker. Para executar corretamente, é necessário ter o Docker e Docker Compose instalados na máquina.
-  </div>
+Este projeto consiste em dois sistemas distintos (Servidor e Aplicação), disponibilizados como imagens Docker. Para executar corretamente, é necessário ter o Docker e Docker Compose instalados na máquina.
 
 ### Servidor e Cliente
 
@@ -70,19 +68,14 @@ Para atender a essa demanda, foi desenvolvida uma solução utilizando a linguag
 
 ### Arquitetura da Solução
 
-  <div style="text-align: justify">
-
 Baseada no modelo cliente-servidor e implementada com a linguagem Go, a solução utiliza sockets TCP/IP para a comunicação entre os clientes e o servidor central, usando uma padronização de mensagem baseada na estrutura Hypertext Transfer Protocol(HTTP) de requisição. A arquitetura foi pensada para garantir que as reservas de trechos sejam feitas de forma concorrente, evitando que dois clientes reservem o mesmo trecho ao mesmo tempo.
 
 O servidor é o primeiro componente a ser inicializado, pois ele atua como o núcleo central do sistema. Ele é responsável por gerenciar todas as requisições de compra de passagens. O servidor escuta em uma porta TCP específica, aguardando conexões de clientes. Após a inicialização do servidor, os clientes podem se conectar ao sistema para consultar as rotas e trechos disponíveis, realizar compras, e garantir que os trechos reservados sejam exclusivos para o primeiro cliente que os solicitar.
 
 Após a inicialização, o servidor fica escutando as portas TCP para gerenciar as conexões dos clientes. Quando um cliente tenta se conectar ao servidor, o servidor aceita a conexão e a trata individualmente. Para cada cliente conectado, o servidor verifica se a solicitação de compra pode ser processada e responde com a confirmação da reserva ou uma mensagem informando que o trecho já foi reservado.
 
-  </div>
 
 ### Protocolo de Comunicação
-
-  <div style="text-align: justify">
 
 Para garantir a comunicação eficiente e confiável entre os clientes e o servidor no sistema de compra de passagens aéreas, foi desenvolvido um protocolo de comunicação baseado em TCP/IP. Esse protocolo é responsável por organizar a troca de mensagens entre os clientes e o servidor, assegurando que as operações de consulta e compra de trechos sejam realizadas corretamente.
 
@@ -96,33 +89,24 @@ A comunicação entre cliente e servidor é realizada através de sockets TCP, g
 
 O modelo de mensagem de solicitação foi desenvolvido com base no protocolo HTTP, garantindo uma estrutura familiar e intuitiva. As mensagens são compostas por um cabeçalho que define o método da requisição (como GET, GETALL e BUY) e um corpo que contém os dados necessários para a operação. As respostas a essas solicitações são enviadas em formato JSON ao cliente, facilitando a interpretação e a manipulação dos dados.
 
-  </div>
 
 ### Conexões e Dados
 
-  <div style="text-align: justify">
-  Utilizando a linguagem Go, as goroutines desempenharam um papel crucial na implementação da concorrência, permitindo que múltiplas conexões fossem tratadas simultaneamente, sem comprometer o desempenho do sistema. Visto que a ideia do projeto só seguiu em frente,  devido a extrema otimização, o que permite que várias goroutines sejam criadas em paralelo mantendo sua eficiência
-  </div>
+  
+Utilizando a linguagem Go, as goroutines desempenharam um papel crucial na implementação da concorrência, permitindo que múltiplas conexões fossem tratadas simultaneamente, sem comprometer o desempenho do sistema. Visto que a ideia do projeto só seguiu em frente,  devido a extrema otimização, o que permite que várias goroutines sejam criadas em paralelo mantendo sua eficiência
 
 ### Conexões com Goroutines
 
-  <div style="text-align: justify">
-  As goroutines são leves, eficientes e propriamente feitas para esse contexto, facilitando a criação de múltiplas tarefas que podem operar em paralelo. Cada vez que um cliente inicia uma conexão com o servidor, uma nova goroutine é criada para gerenciar essa interação. Isso permite que o servidor atenda a diversos clientes ao mesmo tempo, garantindo que as requisições sejam processadas de forma independente e rápida. Com essa abordagem, o sistema consegue escalar facilmente, suportando um número crescente de usuários sem afetar a experiência geral.
-  </div>
+As goroutines são leves, eficientes e propriamente feitas para esse contexto, facilitando a criação de múltiplas tarefas que podem operar em paralelo. Cada vez que um cliente inicia uma conexão com o servidor, uma nova goroutine é criada para gerenciar essa interação. Isso permite que o servidor atenda a diversos clientes ao mesmo tempo, garantindo que as requisições sejam processadas de forma independente e rápida. Com essa abordagem, o sistema consegue escalar facilmente, suportando um número crescente de usuários sem afetar a experiência geral.
 
 ### Dados
-
-  <div style="text-align: justify">
 
 Os dados são carregados na memória a partir de arquivos JSON, funcionando como uma forma de estado e cache. Essa estratégia permite um acesso rápido e eficiente às informações, reduzindo a latência nas solicitações feitas ao servidor. Ao manter os dados em memória, o sistema pode responder rapidamente a consultas e operações de compra, sem a necessidade de ler constantemente do disco, o que poderia causar atrasos.
 
 Quando uma operação é realizada, o estado em memória é atualizado instantaneamente, e as alterações podem ser periodicamente salvas nos arquivos JSON para garantir a persistência. Essa abordagem não apenas acelera as solicitações, mas também minimiza a carga no sistema de arquivos, permitindo que o servidor se concentre em processar as requisições de forma mais eficaz.
 
-  </div>
 
 ## Gerenciamento da Aplicação
-
-  <div style="text-align: justify">
 
 A aplicação adota um modelo stateless, onde cada requisição do cliente é tratada como uma transação independente, através do Cadastro de Pessoas Físicas (CPF), que age como uma forma de TOKEN. Nesse contexto, o servidor não armazena informações sobre o estado da sessão do usuário entre as requisições. Essa abordagem traz várias vantagens significativas.
 
