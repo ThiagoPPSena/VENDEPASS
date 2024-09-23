@@ -54,6 +54,8 @@ Para atender a essa demanda, foi desenvolvida uma solução utilizando a linguag
   O objetivo do produto é permitir que os clientes possam comprar passagens aéreas online, escolhendo entre os trechos disponíveis e garantindo que, uma vez selecionado, o trecho seja reservado para aquele cliente. O sistema foi projetado para garantir que a primeira pessoa a comprar um ou mais trechos tenha prioridade, evitando que outros clientes possam comprá-lo ao mesmo tempo.
   </div>
 
+![Logo Modelo](public/modelo.png)
+
 ### Cliente (Interface):
 
   <div style="text-align: justify">
@@ -83,6 +85,12 @@ Após a inicialização, o servidor fica escutando as portas TCP para gerenciar 
   <div style="text-align: justify">
 
 Para garantir a comunicação eficiente e confiável entre os clientes e o servidor no sistema de compra de passagens aéreas, foi desenvolvido um protocolo de comunicação baseado em TCP/IP. Esse protocolo é responsável por organizar a troca de mensagens entre os clientes e o servidor, assegurando que as operações de consulta e compra de trechos sejam realizadas corretamente.
+
+| Protocolo  | Envio                       | Resposta                            |
+| ---------- | --------------------------- | ----------------------------------- |
+| TCP-GET    | GET DESTINO ORIGEM          | {"status:code, "routes":[...]}      |
+| TCP-GETALL | GETALL HEADER               | {"status:code, "routes":[...]}      |
+| TCP-BUY    | BUY COUNT ORIGEM/DESTINO... | {"status:code, "message":string...} |
 
 A comunicação entre cliente e servidor é realizada através de sockets TCP, garantindo uma conexão confiável, onde os dados são entregues em ordem e sem perda de pacotes. Cada cliente inicia a conexão com o servidor e, a partir disso, pode enviar diferentes tipos de requisições.
 
