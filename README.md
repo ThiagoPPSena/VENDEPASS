@@ -81,7 +81,7 @@ Para garantir a comunicação eficiente e confiável entre os clientes e o servi
 
 | Protocolo  | Envio                       | Resposta                            |
 | ---------- | --------------------------- | ----------------------------------- |
-| TCP-GET    | GET DESTINO ORIGEM          | {"status:code, "routes":[...]}      |
+| TCP-GET    | GET ORIGEM DESTINO          | {"status:code, "routes":[...]}      |
 | TCP-GETALL | GETALL HEADER               | {"status:code, "routes":[...]}      |
 | TCP-BUY    | BUY COUNT ORIGEM/DESTINO... | {"status:code, "message":string...} |
 
