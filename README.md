@@ -123,5 +123,7 @@ Em relação a confiabilidade
 
 ## Conclusão
 
+Em conclusão, o sistema desenvolvido para a companhia aérea de baixo custo atende de maneira eficiente às necessidades de reserva e compra de passagens, utilizando uma arquitetura cliente-servidor com comunicação via sockets TCP/IP. A implementação com goroutines permitiu a concorrência e escalabilidade do servidor, processando múltiplas requisições simultaneamente, sem comprometer o desempenho. Além disso, o uso otimizado da memória RAM para armazenamento temporário dos dados assegura maior velocidade nas operações. Dessa forma, o sistema oferece uma experiência de compra segura, rápida e confiável para os usuários.
+
 ## Referências
 TEMPORIN, Tiago. Quais as diferenças entre goroutines e threads. iMasters, 30 abr. 2018. Disponível em: https://imasters.com.br/go-golang/quais-as-diferencas-entre-goroutines-e-threads. Acesso em: 23 set. 2024.
