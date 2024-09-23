@@ -117,9 +117,11 @@ Além da funcionalidade de compra, a aplicação também oferece uma seção ded
 
 ## Desempenho e Confiabilidade
 
-Como já foi dito em tópicos anteriores, o servidor utiliza de goroutines, que funcionam como threads leves da própria linguagem Go. Goroutines são muito mais leves que threads do sistema operacional. Enquanto uma thread tradicional pode consumir vários MBs de memória, uma goroutine começa com apenas 2 KB (Temporin, 2023). Isso permite a criação de mais goroutines simultâneas do que threads simultâneas, sem sobrecarregar o servidor. Além da eficiência com o uso das goroutines, o sistema prioriza o uso maior da memória RAM ao invés de acesso constante ao disco. Quando o servidor inicia seu funcionamento, todas as informações persistidas no disco são salvas na RAM (que tem acesso mais rápido). O acesso ao disco só é feito quando precisa salvar operações de compras de passagens.
+Como já foi dito em tópicos anteriores, o servidor utiliza de goroutines, que funcionam como threads leves da própria linguagem Go. Goroutines são muito mais leves que threads do sistema operacional. Enquanto uma thread tradicional pode consumir vários MBs de memória, uma goroutine começa com apenas 2 KB (Temporin, 2023). Isso permite a criação de mais goroutines simultâneas do que threads simultâneas, sem sobrecarregar o servidor. Além da eficiência com o uso das goroutines, o sistema prioriza o uso maior da memória RAM ao invés de acesso constante ao disco. Quando o servidor inicia seu funcionamento, todas as informações persistidas no disco são salvas na RAM (que tem acesso mais rápido). O acesso ao disco só é feito quando precisa salvar operações de compras de passagens. 
 
-Em relação a confiabilidade, os clientes apresentam um timeout de conexão com o servidor, ou seja, se por algum motivo o server perder sua conexão na rede e o cliente não receber a resposta
+Foi desenvolvido um script em batch que abre várias conexões entre clientes e o servidor e faz solicitações de compras da mesma passagem. Após alguns testes, percebeu-se que algumas passagens eram vendidas a mais do que havia de disponível. Foi adicionado então um Mutex na área de compra para evitar que mais de um cliente comprasse a mesma passagem. Com isso, mesmo com alguns testes exaustivos, o servidor apresentou sucesso na venda das passagens.
+
+Em relação a confiabilidade, os clientes apresentam um timeout de conexão com o servidor, ou seja, se por algum motivo o servidor perder sua conexão na rede e o cliente não receber uma resposta de retorno em até 2 segundos, sua conexão será fechada e receberá uma mensagem de que o servidor está fora de serviço. 
 
 ## Conclusão
 
