@@ -12,8 +12,9 @@ type Route struct {
 	Seats int
 }
 
+// Mapa de rotas
 var Graph map[string][]Route
-
+// Função para ler as rotas do arquivo JSON
 func ReadRoutes() {
 	// Abre o arquivo JSON
 	file, err := os.Open("./files/routes.json")
@@ -53,9 +54,8 @@ func FindRoutes(graph map[string][]Route, origin string, destination string, vis
 	// Marca como não visitado (permite outras rotas usarem essa cidade novamente)
 	visited[origin] = false
 }
-
+// Método para comprar uma passagem
 func SaveSeats() {
-
 	// Abre o arquivo JSON existente com as opções de sobrescrita
 	file, err := os.OpenFile("./files/routes.json", os.O_WRONLY|os.O_TRUNC, 0)
 	if err != nil {

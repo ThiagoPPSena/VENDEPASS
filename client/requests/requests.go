@@ -7,19 +7,19 @@ import (
 	"strings"
 	"time"
 )
-
+// Estrutura de rota
 type Route struct {
 	From string `json:"from"`
 	To   string `json:"to"`
 }
-
+// Endereço do servidor, porta e cabeçalho de CPF
 var ServerAddress = "localhost"
 var ServerPort = "8080"
 var HeaderCpf string
 
 // Coloca um timeout de 2 segundos para a conexão
 var ConnectionTimeout = 2 * time.Second
-
+// Função para fazer uma requisição ao servidor
 func RequestServer(request string) ([]byte, error) {
 	//Conectar ao servidor tcp porta 8080
 	connect, err := net.DialTimeout("tcp", ServerAddress+":"+ServerPort, ConnectionTimeout)
@@ -78,7 +78,6 @@ func StringBuy(routes []Route) string {
 
 // GETALL
 // CPF 00000000000
-
 // Função para gerar a string de requisição para obter todas as rotas
 func StringGetAll() string {
 	request := "GETALL\n" + "CPF " + HeaderCpf
