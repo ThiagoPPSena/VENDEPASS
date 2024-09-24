@@ -129,5 +129,7 @@ Em conclusão, o sistema desenvolvido para a companhia aérea de baixo custo ate
 
 ## Referências
 TEMPORIN, Tiago. Quais as diferenças entre goroutines e threads. iMasters, 30 abr. 2018. Disponível em: https://imasters.com.br/go-golang/quais-as-diferencas-entre-goroutines-e-threads. Acesso em: 22 set. 2024.
+
 ALURA. HTTP: Entenda o protocolo que é a base da comunicação na Web. Disponível em: https://www.alura.com.br/artigos/http. Acesso em: 22 set. 2024.
+
 IBM. Protocolos TCP/IP. Disponível em: https://www.ibm.com/docs/pt-br/aix/7.3?topic=protocol-tcpip-protocols. Acesso em: 23 set. 2024.
