@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"os"
 )
-
+// Estrutura de passagens
 type MyPassages struct {
 	From string
 	To   string
 }
-
+// Mapa de passagens
 var Passages = map[string][]MyPassages{}
-
+// Função para ler as passagens do arquivo JSON
 func GetPassages() {
 	// Abre o arquivo JSON em modo de leitura
 	file, err := os.Open("./files/myPassages.json")
@@ -30,9 +30,8 @@ func GetPassages() {
 		return
 	}
 }
-
+// Função para salvar as passagens no arquivo JSON
 func SavePassages() {
-
 	// Abre o arquivo JSON existente com as opções de sobrescrita
 	file, err := os.OpenFile("./files/myPassages.json", os.O_WRONLY|os.O_TRUNC, 0)
 	if err != nil {

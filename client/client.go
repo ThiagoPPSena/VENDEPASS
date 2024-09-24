@@ -10,24 +10,24 @@ import (
 	"runtime"
 	"strings"
 )
-
+// Estrutura de resposta para a função de busca de passagens disponíveis
 type Response struct {
 	Status int                `json:"status"`
 	Routes [][]requests.Route `json:"routes"`
 }
-
+// Estrutura de resposta para a função de compra de passagens
 type ResponseBuy struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 }
-
+// Estrutura de resposta para a função de busca de todas as passagens
 type ResponseGetAll struct {
 	Status   int              `json:"status"`
 	Passages []requests.Route `json:"passages"`
 }
-
+// Cria um leitor de entrada para o console
 var reader = bufio.NewReader(os.Stdin)
-
+// Função que lê a entrada do usuário
 func input() string {
 	value, _ := reader.ReadString('\n') // Lê até a quebra de linha
 	value = strings.TrimSpace(value)    // Remove espaços extras e a quebra de linha
@@ -38,7 +38,7 @@ func waitForEnter() {
 	fmt.Println("Pressione Enter para continuar...")
 	reader.ReadString('\n') // Aguarda até que o usuário pressione Enter
 }
-
+// Função que limpa o console
 func clearConsole() {
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
@@ -53,7 +53,7 @@ func clearConsole() {
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
-
+// Função que decodifica a resposta do servidor
 func decodeResponse[T any](response []byte) (T, error) {
 	var decodedData T
 
@@ -63,7 +63,7 @@ func decodeResponse[T any](response []byte) (T, error) {
 	}
 	return decodedData, nil
 }
-
+// Função que compra a passagem
 func buyTicket(routes []requests.Route) (ResponseBuy, error) {
 	//Cria uma requisição de compra de rotas
 	request := requests.StringBuy(routes)
@@ -79,7 +79,7 @@ func buyTicket(routes []requests.Route) (ResponseBuy, error) {
 	return data, nil
 
 }
-
+// Função que busca as passagens disponíveis
 func availableTickets(origin string, destination string) (Response, error) {
 	// Cria a requisição de compra de passagem
 	request := requests.StringGet(origin, destination)
@@ -95,24 +95,22 @@ func availableTickets(origin string, destination string) (Response, error) {
 	}
 	return data, nil
 }
-
+// Função que retorna um valor de acordo com a condição
 func ternaryString(condition bool, trueValue string, falseValue string) string {
 	if condition {
 		return trueValue
 	}
 	return falseValue
 }
-
+// Função que permite o usuário escolher a rota
 func chooseRoute() (string, string) {
 	var origin, destination, response string
 
 	for response != "s" {
 		clearConsole()
-		// Precisamos de alguma forma listar todas as origens
 		fmt.Println("Escolha a origem: ")
 		origin = input()
 		clearConsole()
-		// Precisamos de alguma forma listar todos os destinos
 		fmt.Println("Escolha o destino: ")
 		destination = input()
 		clearConsole()
@@ -123,7 +121,7 @@ func chooseRoute() (string, string) {
 	}
 	return origin, destination
 }
-
+// Função que mostra o menu de identificação
 func identificationMenu() string {
 	var cpf string
 	var invalidCpf bool
@@ -139,7 +137,7 @@ func identificationMenu() string {
 	}
 	return cpf
 }
-
+// Função que mostra as passagens disponíveis
 func showTicket(response Response) {
 	for i, routeSet := range response.Routes {
 		fmt.Printf("Passagem %2d: ", i+1)
@@ -152,14 +150,14 @@ func showTicket(response Response) {
 		}
 	}
 }
-
+// Função que mostra as passagens compradas
 func showTicketPurchased(passages []requests.Route) {
 	fmt.Println("Passagens compradas: ")
 	for i, route := range passages {
 		fmt.Printf("Passagem %2d: %s -> %s\n", i+1, route.From, route.To)
 	}
 }
-
+// Função que permite o usuário escolher uma passagem
 func chooseTicket(response Response) []requests.Route {
 	var option int
 	incorrectOption := false

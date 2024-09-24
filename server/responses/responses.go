@@ -23,17 +23,17 @@ type ResponseGet struct {
 	Status int       `json:"status"`
 	Routes [][]Route `json:"routes"`
 }
-
+// Definição da estrutura para representar a resposta JSON
 type ResponseBuy struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 }
-
+// Definição da estrutura para representar a resposta JSON
 type ResponseGetAll struct {
 	Status   int                   `json:"status"`
 	Passages []passages.MyPassages `json:"passages"`
 }
-
+// Função para receber requisições
 func ReceiveRequest() {
 	ln, err := net.Listen("tcp", ":8080") // Ouvindo a porta 8080
 
@@ -59,7 +59,7 @@ func ReceiveRequest() {
 		go handleConnection(conn)
 	}
 }
-
+// Função para lidar com a conexão
 func handleConnection(conn net.Conn) {
 	defer conn.Close() // Fechar conexão após tudo acabar
 	fmt.Println("Nova conexão estabelecida: ", conn.RemoteAddr())
@@ -159,19 +159,20 @@ func get(origin string, destination string) ([]byte, error) {
 	// Exibe o JSON resultante
 	return response, nil
 }
-
+// Mutex para proteger a compra de passagens
 var mutex = &sync.Mutex{}
-
+// Método para comprar passagens
 func buy(count int, routes []string, cpf string) ([]byte, error) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
 	purchaseMap := make(map[string]int)
 	i := 0
+	// Repetições para comprar as passagens
 	for i < count {
 		origin := strings.Split(routes[i], "/")[0]
 		destination := strings.Split(routes[i], "/")[1]
-
+		// Verifica se a cidade de origem existe
 		if graphs.Graph[origin] == nil {
 			response := ResponseBuy{
 				Message: fmt.Sprintf("Nenhuma cidade com essa origem: %s", origin),
@@ -187,6 +188,7 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		}
 
 		routeFound := false
+		// Verifica se a rota existe
 		for index, route := range graphs.Graph[origin] {
 			if route.To == destination {
 				routeFound = true
@@ -222,6 +224,7 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 		}
 		i++
 	}
+	// Comprando as passagens
 	for key, value := range purchaseMap {
 		// Comprando as passagens
 		graphs.Graph[key][value].Seats -= 1
@@ -256,7 +259,7 @@ func buy(count int, routes []string, cpf string) ([]byte, error) {
 	return jsonResponse, nil
 
 }
-
+// Método para obter todas as passagens de um cliente
 func getall(cpf string) ([]byte, error) {
 
 	myPassages := passages.Passages[cpf]
@@ -268,7 +271,7 @@ func getall(cpf string) ([]byte, error) {
 	}
 	return myPassagesFormatted, nil
 }
-
+// Função para processar a requisição
 func proccessRequest(request string) ([]byte, error) {
 	requestSepareted := strings.Split(request, "\n")
 	method := requestSepareted[0]
